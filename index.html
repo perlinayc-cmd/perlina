@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PERLINA — Mode & Accessoires</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --nude: #E8D9C5;
+    --sand: #D4BC9E;
+    --gold: #C4A882;
+    --dark: #2C2420;
+    --brown: #5C4033;
+    --gray: #8A7E72;
+    --white: #FDFAF5;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--dark); }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--white); border-bottom: 1px solid var(--nude);
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 70px;
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 2px 20px rgba(44,36,32,0.08); }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem; font-weight: 600; letter-spacing: 0.2em;
+    color: var(--dark); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { text-decoration: none; color: var(--gray); font-size: 0.85rem; font-weight: 400; letter-spacing: 0.08em; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--dark); }
+  .nav-links a.active { color: var(--dark); font-weight: 500; }
+  .nav-cta {
+    background: var(--dark); color: var(--white);
+    padding: 0.6rem 1.4rem; border-radius: 2px;
+    font-size: 0.8rem; letter-spacing: 0.1em;
+    text-decoration: none; transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--brown); }
+  .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .burger span { width: 24px; height: 1.5px; background: var(--dark); display: block; transition: 0.3s; }
+
+  /* PAGES */
+  .page { display: none; padding-top: 70px; min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ===== HOME ===== */
+  .hero {
+    height: calc(100vh - 70px);
+    background: linear-gradient(160deg, var(--cream) 0%, var(--nude) 60%, var(--sand) 100%);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg-text {
+    position: absolute; font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(8rem, 20vw, 20rem); font-weight: 300;
+    color: rgba(196,168,130,0.12); letter-spacing: 0.1em;
+    user-select: none; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+  .hero-content { text-align: center; position: relative; z-index: 2; padding: 2rem; }
+  .hero-eyebrow { font-size: 0.75rem; letter-spacing: 0.3em; color: var(--gold); margin-bottom: 1.5rem; text-transform: uppercase; }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 9vw, 8rem); font-weight: 300;
+    letter-spacing: 0.25em; line-height: 1;
+    color: var(--dark); margin-bottom: 1.5rem;
+  }
+  .hero-subtitle { font-size: 1rem; color: var(--brown); font-weight: 300; margin-bottom: 2.5rem; letter-spacing: 0.05em; }
+  .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    background: var(--dark); color: var(--white);
+    padding: 0.9rem 2.2rem; text-decoration: none;
+    font-size: 0.82rem; letter-spacing: 0.12em; border-radius: 2px;
+    transition: background 0.2s; cursor: pointer; border: none;
+  }
+  .btn-primary:hover { background: var(--brown); }
+  .btn-outline {
+    background: transparent; color: var(--dark);
+    padding: 0.9rem 2.2rem; text-decoration: none;
+    font-size: 0.82rem; letter-spacing: 0.12em; border-radius: 2px;
+    border: 1px solid var(--sand); transition: all 0.2s; cursor: pointer;
+  }
+  .btn-outline:hover { border-color: var(--dark); }
+
+  /* HOME SECTIONS */
+  .section { padding: 6rem 8%; }
+  .section-label { font-size: 0.7rem; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin-bottom: 0.8rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 4vw, 3rem); font-weight: 300; color: var(--dark); margin-bottom: 1.5rem; }
+  .section-line { width: 40px; height: 1px; background: var(--gold); margin: 1.5rem 0; }
+
+  /* CATEGORIES GRID */
+  .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .cat-card {
+    background: var(--cream); border-radius: 4px; overflow: hidden;
+    aspect-ratio: 3/4; position: relative; cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .cat-card:hover { transform: translateY(-4px); }
+  .cat-card:hover .cat-overlay { opacity: 1; }
+  .cat-img {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem;
+  }
+  .cat-overlay {
+    position: absolute; inset: 0;
+    background: rgba(44,36,32,0.55);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .cat-overlay span { color: var(--white); font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; letter-spacing: 0.15em; }
+  .cat-overlay small { color: var(--nude); font-size: 0.75rem; letter-spacing: 0.1em; margin-top: 0.5rem; }
+  .cat-info { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem; background: linear-gradient(transparent, rgba(44,36,32,0.6)); }
+  .cat-name { color: var(--white); font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; letter-spacing: 0.1em; }
+  .cat-sub { color: var(--nude); font-size: 0.75rem; }
+
+  /* VALUES */
+  .values-section { background: var(--cream); }
+  .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 3rem; margin-top: 3rem; }
+  .value-item { text-align: center; }
+  .value-icon { font-size: 2rem; margin-bottom: 1rem; }
+  .value-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--dark); margin-bottom: 0.5rem; }
+  .value-text { font-size: 0.85rem; color: var(--gray); line-height: 1.7; }
+
+  /* QUOTE */
+  .quote-section {
+    background: var(--dark); color: var(--white);
+    text-align: center; padding: 6rem 10%;
+  }
+  .quote-text { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem, 3vw, 2.5rem); font-style: italic; font-weight: 300; line-height: 1.5; color: var(--nude); }
+  .quote-author { margin-top: 2rem; font-size: 0.8rem; letter-spacing: 0.2em; color: var(--gold); }
+
+  /* ===== COLLECTION PAGE ===== */
+  .page-hero { background: var(--cream); padding: 5rem 8% 3rem; }
+  .page-hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 300; letter-spacing: 0.15em; }
+
+  .filters { padding: 2rem 8% 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; border-bottom: 1px solid var(--nude); }
+  .filter-btn {
+    padding: 0.5rem 1.2rem; border: 1px solid var(--nude);
+    background: transparent; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem; letter-spacing: 0.08em; border-radius: 2px;
+    transition: all 0.2s; color: var(--gray);
+  }
+  .filter-btn.active { background: var(--dark); color: var(--white); border-color: var(--dark); }
+  .filter-btn:hover:not(.active) { border-color: var(--sand); color: var(--dark); }
+
+  .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem; padding: 3rem 8%; }
+  .product-card { cursor: pointer; }
+  .product-img {
+    aspect-ratio: 3/4; background: var(--cream); border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3.5rem; margin-bottom: 1rem; position: relative;
+    overflow: hidden; transition: all 0.3s;
+  }
+  .product-card:hover .product-img { background: var(--nude); }
+  .product-badge {
+    position: absolute; top: 1rem; left: 1rem;
+    background: var(--dark); color: var(--white);
+    font-size: 0.65rem; letter-spacing: 0.1em; padding: 0.3rem 0.7rem; border-radius: 2px;
+  }
+  .product-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--dark); margin-bottom: 0.3rem; }
+  .product-cat { font-size: 0.75rem; color: var(--gray); margin-bottom: 0.5rem; letter-spacing: 0.05em; }
+  .product-price { font-size: 0.95rem; font-weight: 500; color: var(--brown); }
+
+  /* ===== ABOUT PAGE ===== */
+  .about-hero {
+    min-height: 60vh; background: linear-gradient(135deg, var(--cream) 0%, var(--nude) 100%);
+    display: flex; align-items: center; padding: 5rem 8%;
+  }
+  .about-hero-content { max-width: 700px; }
+  .about-intro { font-size: 1.8rem; font-family: 'Cormorant Garamond', serif; font-weight: 300; line-height: 1.6; color: var(--dark); margin-top: 1rem; }
+  .about-story { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; padding: 6rem 8%; }
+  .about-img { aspect-ratio: 4/5; background: var(--cream); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 6rem; }
+  .about-text p { font-size: 0.95rem; line-height: 1.9; color: var(--gray); margin-bottom: 1.5rem; }
+  .team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 2rem; padding: 4rem 8% 6rem; background: var(--cream); }
+  .team-card { text-align: center; }
+  .team-avatar { width: 90px; height: 90px; border-radius: 50%; background: var(--nude); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+  .team-name { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--dark); }
+  .team-role { font-size: 0.78rem; color: var(--gold); letter-spacing: 0.1em; margin-top: 0.2rem; }
+
+  /* ===== CONTACT PAGE ===== */
+  .contact-layout { display: grid; grid-template-columns: 1fr 1fr; min-height: calc(100vh - 70px); }
+  .contact-info { background: var(--dark); color: var(--white); padding: 6rem 8%; display: flex; flex-direction: column; justify-content: center; }
+  .contact-info h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 300; color: var(--nude); margin-bottom: 2rem; }
+  .contact-info p { font-size: 0.9rem; line-height: 1.8; color: var(--gray); margin-bottom: 2.5rem; }
+  .contact-item { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+  .contact-icon { font-size: 1.2rem; }
+  .contact-detail p { font-size: 0.8rem; color: var(--gray); }
+  .contact-detail strong { color: var(--white); font-size: 0.9rem; }
+  .social-links { display: flex; gap: 1rem; margin-top: 2rem; }
+  .social-link { width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; color: var(--white); transition: all 0.2s; }
+  .social-link:hover { background: var(--gold); border-color: var(--gold); }
+
+  .contact-form-wrap { padding: 6rem 8%; display: flex; flex-direction: column; justify-content: center; background: var(--white); }
+  .contact-form-wrap h2 { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: var(--dark); margin-bottom: 2.5rem; }
+  .form-group { margin-bottom: 1.5rem; }
+  .form-group label { display: block; font-size: 0.75rem; letter-spacing: 0.1em; color: var(--gray); margin-bottom: 0.5rem; }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 0.85rem 1rem;
+    border: 1px solid var(--nude); border-radius: 2px;
+    background: var(--white); font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; color: var(--dark);
+    transition: border-color 0.2s; outline: none;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--gold); }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-success { display: none; background: #e8f4e8; border: 1px solid #a8d5a8; border-radius: 4px; padding: 1rem; color: #2d5a2d; font-size: 0.9rem; margin-top: 1rem; }
+
+  /* FOOTER */
+  footer { background: var(--dark); color: var(--white); padding: 4rem 8% 2rem; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem; }
+  .footer-brand .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; letter-spacing: 0.2em; color: var(--nude); margin-bottom: 1rem; }
+  .footer-brand p { font-size: 0.82rem; line-height: 1.7; color: var(--gray); }
+  .footer-col h4 { font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 1rem; text-transform: uppercase; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.6rem; }
+  .footer-col ul li a { color: var(--gray); text-decoration: none; font-size: 0.82rem; transition: color 0.2s; cursor: pointer; }
+  .footer-col ul li a:hover { color: var(--white); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-bottom p { font-size: 0.75rem; color: var(--gray); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links, .nav-cta { display: none; }
+    .burger { display: flex; }
+    .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: var(--white); padding: 2rem 5%; border-bottom: 1px solid var(--nude); gap: 1.5rem; }
+    .nav-links.open + .nav-cta { display: block; margin: 0 5% 1rem; }
+    .about-story { grid-template-columns: 1fr; gap: 2rem; }
+    .contact-layout { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .form-row { grid-template-columns: 1fr; }
+    .hero-btns { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a class="nav-logo" href="#" onclick="showPage('home')">PERLINA</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#" onclick="showPage('home')" class="active" id="nav-home">Accueil</a></li>
+    <li><a href="#" onclick="showPage('collection')" id="nav-collection">Collection</a></li>
+    <li><a href="#" onclick="showPage('about')" id="nav-about">À propos</a></li>
+    <li><a href="#" onclick="showPage('contact')" id="nav-contact">Contact</a></li>
+  </ul>
+  <a class="nav-cta" href="#" onclick="showPage('contact')">Commander</a>
+  <div class="burger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+  <section class="hero">
+    <div class="hero-bg-text">PERLINA</div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">Mode & Accessoires — Tunisie</p>
+      <h1 class="hero-title">PERLINA</h1>
+      <p class="hero-subtitle">Vêtements · Sacs · Beachwear · Sets</p>
+      <div class="hero-btns">
+        <a class="btn-primary" href="#" onclick="showPage('collection')">Voir la collection</a>
+        <a class="btn-outline" href="#" onclick="showPage('about')">Notre histoire</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <p class="section-label">Ce que nous offrons</p>
+    <h2 class="section-title">Nos univers</h2>
+    <div class="section-line"></div>
+    <div class="categories-grid">
+      <div class="cat-card" onclick="showPage('collection')">
+        <div class="cat-img" style="background: linear-gradient(135deg,#F5ECD5,#E8D9C5);">🌊</div>
+        <div class="cat-info">
+          <p class="cat-name">Beachwear</p>
+          <p class="cat-sub">Été & bord de mer</p>
+        </div>
+        <div class="cat-overlay"><span>Beachwear</span><small>Voir →</small></div>
+      </div>
+      <div class="cat-card" onclick="showPage('collection')">
+        <div class="cat-img" style="background: linear-gradient(135deg,#EDE0D0,#D4BC9E);">👜</div>
+        <div class="cat-info">
+          <p class="cat-name">Sacs</p>
+          <p class="cat-sub">Artisanat & style</p>
+        </div>
+        <div class="cat-overlay"><span>Sacs</span><small>Voir →</small></div>
+      </div>
+      <div class="cat-card" onclick="showPage('collection')">
+        <div class="cat-img" style="background: linear-gradient(135deg,#F0E8DA,#E0CFBA);">✨</div>
+        <div class="cat-info">
+          <p class="cat-name">Sets & Coordonnés</p>
+          <p class="cat-sub">Looks clés en main</p>
+        </div>
+        <div class="cat-overlay"><span>Sets</span><small>Voir →</small></div>
+      </div>
+      <div class="cat-card" onclick="showPage('collection')">
+        <div class="cat-img" style="background: linear-gradient(135deg,#EAE0D5,#D8C9B5);">🧵</div>
+        <div class="cat-info">
+          <p class="cat-name">Pièces Handmade</p>
+          <p class="cat-sub">Unique & fait à la main</p>
+        </div>
+        <div class="cat-overlay"><span>Handmade</span><small>Voir →</small></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section values-section">
+    <p class="section-label">Ce qui nous définit</p>
+    <h2 class="section-title">Nos valeurs</h2>
+    <div class="values-grid">
+      <div class="value-item">
+        <div class="value-icon">🤍</div>
+        <h3 class="value-title">Authenticité</h3>
+        <p class="value-text">Chaque pièce PERLINA est pensée pour durer et se démarquer de la mode de masse.</p>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">✦</div>
+        <h3 class="value-title">Unicité</h3>
+        <p class="value-text">Pas de copie, pas de série infinie — des collections limitées pour rester exclusif.</p>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🌊</div>
+        <h3 class="value-title">Liberté de style</h3>
+        <p class="value-text">Mode mixte, sans frontières — pour elle, pour lui, pour tous.</p>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">📦</div>
+        <h3 class="value-title">Proximité</h3>
+        <p class="value-text">Commande simple, livraison rapide, service humain. On est là pour toi.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="quote-section">
+    <p class="quote-text">"Porter PERLINA, c'est choisir de se montrer tel qu'on est vraiment."</p>
+    <p class="quote-author">— PERLINA, Mode & Accessoires</p>
+  </section>
+</div>
+
+<!-- ===== COLLECTION PAGE ===== -->
+<div class="page" id="page-collection">
+  <div class="page-hero">
+    <p class="section-label">Découvrez</p>
+    <h1>Notre Collection</h1>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterProducts('all', this)">Tout</button>
+    <button class="filter-btn" onclick="filterProducts('beachwear', this)">Beachwear</button>
+    <button class="filter-btn" onclick="filterProducts('sacs', this)">Sacs</button>
+    <button class="filter-btn" onclick="filterProducts('sets', this)">Sets</button>
+    <button class="filter-btn" onclick="filterProducts('handmade', this)">Handmade</button>
+  </div>
+
+  <div class="products-grid" id="productsGrid">
+    <div class="product-card" data-cat="beachwear">
+      <div class="product-img">🌊<span class="product-badge">NOUVEAU</span></div>
+      <p class="product-name">Set Plage Estival</p>
+      <p class="product-cat">Beachwear</p>
+    </div>
+    <div class="product-card" data-cat="beachwear">
+      <div class="product-img">☀️</div>
+      <p class="product-name">Robe de Plage Nude</p>
+      <p class="product-cat">Beachwear</p>
+    </div>
+    <div class="product-card" data-cat="sacs">
+      <div class="product-img">👜<span class="product-badge">BESTSELLER</span></div>
+      <p class="product-name">Sac Perlina Mini</p>
+      <p class="product-cat">Sacs</p>
+    </div>
+    <div class="product-card" data-cat="sacs">
+      <div class="product-img">🎒</div>
+      <p class="product-name">Tote Bag Natural</p>
+      <p class="product-cat">Sacs</p>
+    </div>
+    <div class="product-card" data-cat="sets">
+      <div class="product-img">✨<span class="product-badge">LIMITÉ</span></div>
+      <p class="product-name">Set Coordonné Nude</p>
+      <p class="product-cat">Sets</p>
+    </div>
+    <div class="product-card" data-cat="sets">
+      <div class="product-img">🤍</div>
+      <p class="product-name">Set Été Complet</p>
+      <p class="product-cat">Sets</p>
+      <p class="product-price">160 TND</p>
+    </div>
+    <div class="product-card" data-cat="handmade">
+      <div class="product-img">🧵<span class="product-badge">UNIQUE</span></div>
+      <p class="product-name">Suétete Handmade Beige</p>
+      <p class="product-cat">Handmade</p>
+    </div>
+    <div class="product-card" data-cat="handmade">
+      <div class="product-img">🎀</div>
+      <p class="product-name">Top Artisanal Blanc</p>
+      <p class="product-cat">Handmade</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ABOUT PAGE ===== -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <div class="about-hero-content">
+      <p class="section-label">Notre histoire</p>
+      <h1 class="section-title" style="font-size: clamp(2rem,5vw,4rem);">À propos de PERLINA</h1>
+      <p class="about-intro">Une marque née d'une passion pour la mode, le savoir-faire artisanal et l'expression de soi — sans limites.</p>
+    </div>
+  </div>
+
+  <div class="about-story">
+    <div class="about-img">🌊</div>
+    <div class="about-text">
+      <p class="section-label">Nos origines</p>
+      <h2 class="section-title">Née en Tunisie, portée partout</h2>
+      <div class="section-line"></div>
+      <p>PERLINA est née d'une vision simple : créer des vêtements et accessoires qui parlent à ceux qui osent être eux-mêmes. Inspirée par la douceur de la perle et la chaleur de la Méditerranée, la marque a grandi à Tunis avant de toucher une clientèle bien au-delà des frontières.</p>
+      <p>Chaque pièce est pensée avec soin — qu'il s'agisse d'un ensemble beachwear, d'un sac artisanal ou d'une pièce handmade unique. PERLINA, c'est la mode qui raconte une histoire : la tienne.</p>
+      <a class="btn-primary" href="#" onclick="showPage('collection')" style="display:inline-block; margin-top:1rem;">Voir la collection</a>
+    </div>
+  </div>
+
+  <div style="padding: 3rem 8%; background: var(--cream);">
+    <p class="section-label">Nos engagements</p>
+    <h2 class="section-title">Ce qui nous anime</h2>
+    <div class="values-grid" style="margin-top:2rem;">
+      <div class="value-item">
+        <div class="value-icon">🌿</div>
+        <h3 class="value-title">Qualité avant tout</h3>
+        <p class="value-text">Des matières sélectionnées avec soin pour des pièces qui durent et qui s'améliorent avec le temps.</p>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">🤝</div>
+        <h3 class="value-title">Savoir-faire local</h3>
+        <p class="value-text">Nous valorisons le talent local et l'artisanat tunisien dans chaque création.</p>
+      </div>
+      <div class="value-item">
+        <div class="value-icon">💛</div>
+        <h3 class="value-title">Communauté</h3>
+        <p class="value-text">PERLINA c'est une famille. Nos clients font partie de notre histoire.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONTACT PAGE ===== -->
+<div class="page" id="page-contact">
+  <div class="contact-layout">
+    <div class="contact-info">
+      <p class="section-label" style="color: var(--gold);">On est là</p>
+      <h2>Contactez-nous</h2>
+      <p>Une question sur une pièce, une commande, une collaboration ? On répond rapidement et avec plaisir.</p>
+      <div class="contact-item">
+        <span class="contact-icon">📍</span>
+        <div class="contact-detail">
+          <p>Adresse</p>
+          <strong>Sfax, Tunisie</strong>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">📩</span>
+        <div class="contact-detail">
+          <p>Email</p>
+          <strong>PERLINA_YC@gmail.com</strong>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">📱</span>
+        <div class="contact-detail">
+          <p>Instagram / DM</p>
+          <strong>@perlina.tn</strong>
+        </div>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon">🕐</span>
+        <div class="contact-detail">
+          <p>Disponibilité</p>
+          <strong>Lun – Sam : 9h – 20h</strong>
+        </div>
+      </div>
+      <div class="social-links">
+        <a class="social-link" href="#">📸</a>
+        <a class="social-link" href="#">🎵</a>
+        <a class="social-link" href="#">💬</a>
+      </div>
+    </div>
+
+    <div class="contact-form-wrap">
+      <h2>Envoyer un message</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label>PRÉNOM</label>
+          <input type="text" placeholder="Ton prénom" id="fname">
+        </div>
+        <div class="form-group">
+          <label>NOM</label>
+          <input type="text" placeholder="Ton nom" id="lname">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>EMAIL</label>
+        <input type="email" placeholder="ton@email.com" id="email">
+      </div>
+      <div class="form-group">
+        <label>SUJET</label>
+        <select id="subject">
+          <option value="">Choisir un sujet...</option>
+          <option>Commande</option>
+          <option>Information produit</option>
+          <option>Livraison</option>
+          <option>Collaboration</option>
+          <option>Autre</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>MESSAGE</label>
+        <textarea placeholder="Ton message..." id="message"></textarea>
+      </div>
+      <button class="btn-primary" onclick="submitForm()" style="width: 100%;">Envoyer le message</button>
+      <div class="form-success" id="formSuccess">✅ Message envoyé ! On te répond dans les plus brefs délais.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">PERLINA</div>
+      <p>Mode, accessoires & sacs pour ceux qui osent se démarquer. Collections limitées, livraison dans toute la Tunisie.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a onclick="showPage('home')">Accueil</a></li>
+        <li><a onclick="showPage('collection')">Collection</a></li>
+        <li><a onclick="showPage('about')">À propos</a></li>
+        <li><a onclick="showPage('contact')">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Collections</h4>
+      <ul>
+        <li><a onclick="showPage('collection')">Beachwear</a></li>
+        <li><a onclick="showPage('collection')">Sacs</a></li>
+        <li><a onclick="showPage('collection')">Sets</a></li>
+        <li><a onclick="showPage('collection')">Handmade</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a>Sfax, Tunisie</a></li>
+        <li><a>perlinayc@gmail.com</a></li>
+        <li><a>@perlina.tn</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 PERLINA — Tous droits réservés</p>
+    <p>Fait avec 🤍 en Tunisie</p>
+  </div>
+</footer>
+
+<script>
+  function showPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
+    const navEl = document.getElementById('nav-' + pageId);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo(0, 0);
+    document.getElementById('navLinks').classList.remove('open');
+  }
+
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 20);
+  });
+
+  function filterProducts(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.product-card').forEach(card => {
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
+    });
+  }
+
+  function submitForm() {
+    const fname = document.getElementById('fname').value;
+    const email = document.getElementById('email').value;
+    if (!fname || !email) { alert('Merci de remplir au moins ton prénom et ton email.'); return; }
+    document.getElementById('formSuccess').style.display = 'block';
+    setTimeout(() => document.getElementById('formSuccess').style.display = 'none', 5000);
+  }
+</script>
+</body>
+</html>
