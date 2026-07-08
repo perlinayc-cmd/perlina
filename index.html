@@ -155,8 +155,7 @@
   .filter-btn.active { background: var(--dark); color: var(--white); border-color: var(--dark); }
   .filter-btn:hover:not(.active) { border-color: var(--sand); color: var(--dark); }
 
-  .products-grid {display: grid; grid-template-columns: repeat(3, 1fr);
-  .product-card { cursor: pointer; }
+  .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; padding: 3rem 8%; }  .product-card { cursor: pointer; }
   .product-img {
     aspect-ratio: 3/4; background: var(--cream); border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
@@ -233,6 +232,7 @@
 
   /* RESPONSIVE */
   @media (max-width: 768px) {
+    .products-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
     .nav-links, .nav-cta { display: none; }
     .burger { display: flex; }
     .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: var(--white); padding: 2rem 5%; border-bottom: 1px solid var(--nude); gap: 1.5rem; }
